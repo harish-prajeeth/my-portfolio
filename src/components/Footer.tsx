@@ -3,9 +3,6 @@ const Footer = () => (
     <p className="font-orbitron text-xs text-primary/60 tracking-widest">
       ⚽ EGO + CODE = WINNING GOAL
     </p>
-    <p className="font-inter text-xs text-muted-foreground mt-2">
-      © 2025 Harish Prajeeth. All rights reserved.
-    </p>
   </footer>
 );
 
