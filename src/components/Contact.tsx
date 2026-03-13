@@ -22,7 +22,7 @@ const Contact = () => {
           className="glass rounded-xl p-10 text-center"
         >
           <p className="font-inter text-muted-foreground mb-8 max-w-md mx-auto">
-            Looking for an internship opportunity or want to collaborate on a project? Let's connect!
+            I am currently open to new opportunities and collaborations. Whether you have a project in mind, want to discuss potential partnerships, or just want to say hello, feel free to reach out!
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
