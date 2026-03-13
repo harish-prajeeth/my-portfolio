@@ -7,18 +7,28 @@ const projects = [
     description: "Full-stack task manager with user registration, login, and CRUD operations. RESTful API with Express and MongoDB, responsive React UI.",
     tech: ["React", "Node.js", "Express", "MongoDB", "REST API"],
     icon: "📋",
+    urlProject:"TaskFlow",
   },
   {
     title: "DevBlog",
     description: "Blogging platform where users create, edit, and delete posts. Server-side routing and templating with SQLite backend.",
     tech: ["HTML", "CSS", "JavaScript", "Node.js", "Express", "SQLite3"],
     icon: "📝",
+    urlProject:"DevBlog",
   },
   {
     title: "ShopLite",
     description: "E-commerce prototype with product listing, cart management, and order placement. REST APIs integrated with React frontend.",
     tech: ["React", "Node.js", "Express", "PostgreSQL", "REST API"],
     icon: "🛒",
+    urlProject:"ShopLite",
+  },
+  {
+    title: "Jharkand Tourism",
+    description: "Tourism website showcasing Jharkand's attractions, culture, and travel info. Built with Flask and styled with HTML/CSS.",
+    tech: ["Flask" , "HTML" , "CSS" , "JavaScript"],
+    icon: "🌍",
+    urlProject:"Jharkand-Tourism",
   },
 ];
 
@@ -61,7 +71,7 @@ const Projects = () => {
                 ))}
               </div>
               <a
-                href={`https://github.com/harish-prajeeth`}
+                href={`https://github.com/harish-prajeeth/${project.urlProject}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 mt-5 text-xs font-orbitron text-primary/60 hover:text-primary transition-colors tracking-wider"
