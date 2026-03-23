@@ -7,29 +7,30 @@ const projects = [
     description: "Full-stack task manager with user registration, login, and CRUD operations. RESTful API with Express and MongoDB, responsive React UI.",
     tech: ["React", "Node.js", "Express", "MongoDB", "REST API"],
     icon: "📋",
-    urlProject:"TaskFlow",
+    urlProject: "TaskFlow",
   },
   {
-    title: "DevBlog",
-    description: "Blogging platform where users create, edit, and delete posts. Server-side routing and templating with SQLite backend.",
-    tech: ["HTML", "CSS", "JavaScript", "Node.js", "Express", "SQLite3"],
-    icon: "📝",
-    urlProject:"DevBlog",
+    title: "Digital Doctor",
+    description: "An AI integrated website having separate dashboard for admins, patients... Built with Flask and styled with HTML/CSS.",
+    tech: ["Flask", "Mongodb", "Node.js", "React"],
+    icon: "🌍",
+    urlProject: "digital-doctor",
   },
   {
-    title: "ShopLite",
-    description: "E-commerce prototype with product listing, cart management, and order placement. REST APIs integrated with React frontend.",
-    tech: ["React", "Node.js", "Express", "PostgreSQL", "REST API"],
-    icon: "🛒",
-    urlProject:"ShopLite",
+    title: "Neurosim",
+    description: "Intelligent decision simulation system that analyzes user inputs, models multiple future scenarios, and provides explainable, confidence-aware recommendations.",
+    tech: ["Python", "FastAPI", "React", "JavaScript", "HTML", "CSS", "JSON"],
+    icon: "🧠",
+    urlProject: "Neurosim",
   },
   {
     title: "Jharkand Tourism",
     description: "Tourism website showcasing Jharkand's attractions, culture, and travel info. Built with Flask and styled with HTML/CSS.",
-    tech: ["Flask" , "HTML" , "CSS" , "JavaScript"],
+    tech: ["Flask", "HTML", "CSS", "JavaScript"],
     icon: "🌍",
-    urlProject:"Jharkand-Tourism",
+    urlProject: "Jharkand-Tourism",
   },
+
 ];
 
 const Projects = () => {
