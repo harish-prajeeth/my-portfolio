@@ -21,7 +21,7 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
         >
           <p className="font-orbitron text-xs tracking-[0.4em] text-primary mb-6 uppercase">
-            ⚽ Ego-Driven Developer
+            Ego-Driven Developer
           </p>
         </motion.div>
 
@@ -57,7 +57,7 @@ const Hero = () => {
             href="#projects"
             className="font-orbitron text-sm px-8 py-4 bg-primary text-primary-foreground font-bold tracking-wider hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] hover:scale-105 transition-all duration-300 rounded-sm"
           >
-            VIEW GOALS ⚡
+            VIEW GOALS
           </a>
           <a
             href="#contact"
