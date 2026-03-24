@@ -3,11 +3,11 @@ import { ExternalLink } from "lucide-react";
 
 const projects = [
   {
-    title: "TaskFlow",
-    description: "Full-stack task manager with user registration, login, and CRUD operations. RESTful API with Express and MongoDB, responsive React UI.",
-    tech: ["React", "Node.js", "Express", "MongoDB", "REST API"],
-    icon: "📋",
-    urlProject: "TaskFlow",
+    title: "ai-stock-predictor",
+    description: "This project is a full-stack web application designed to track stock market data and provide simulated AI-driven price predictions and ROI simulations.",
+    tech: ["Node.js", "Express", "MongoDB", "Mongoose", "React", "Recharts"],
+    icon: "📈",
+    urlProject: "ai-stock-predictor",
   },
   {
     title: "Digital Doctor",
