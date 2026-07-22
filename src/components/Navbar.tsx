@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const navLinks = [
-  { label: "Striker", href: "#about" },
-  { label: "Weapons", href: "#skills" },
-  { label: "Goals", href: "#projects" },
-  { label: "Matches", href: "#experience" },
+  { label: "Home", href: "#" },
+  { label: "Profile", href: "#about" },
+  { label: "Expertise", href: "#skills" },
+  { label: "Projects", href: "#projects" },
+  { label: "Certifications", href: "#certifications" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -30,7 +31,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <a href="#" className="font-orbitron text-xl font-bold text-primary tracking-widest">
-          DEVELOPER
+          AI & ML ENGINEER
         </a>
 
         {/* Desktop nav */}

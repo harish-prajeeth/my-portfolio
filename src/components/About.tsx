@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { MapPin, GraduationCap, Code2 } from "lucide-react";
 
 const stats = [
-  { label: "Projects Built", value: "3+" },
-  { label: "Tech Stack", value: "10+" },
-  { label: "Internship", value: "1" },
+  { label: "Projects Built", value: "6+" },
+  { label: "Tech Stack", value: "15+" },
+  { label: "Internships", value: "3" },
   { label: "Graduating", value: "2027" },
 ];
 
@@ -20,7 +20,7 @@ const About = () => {
           className="text-center mb-16"
         >
           <p className="font-orbitron text-xs tracking-[0.3em] text-primary mb-3">01 // ABOUT</p>
-          <h2 className="font-orbitron text-4xl sm:text-5xl font-bold text-glow">The Striker</h2>
+          <h2 className="font-orbitron text-4xl sm:text-5xl font-bold text-glow">AI/ML Engineer</h2>
         </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-10 items-start">
@@ -33,25 +33,21 @@ const About = () => {
             className="lg:col-span-3 glass rounded-xl p-8"
           >
             <p className="font-inter text-muted-foreground leading-relaxed text-base">
-              Computer Science student focused on <span className="text-primary font-semibold">Full-Stack Web Development</span>, 
-              with hands-on experience building responsive frontends and RESTful backends using React, Node.js, Express, 
-              and SQL/NoSQL databases. Experienced in deploying small-scale web apps and collaborating in Git-based workflows.
+              <strong className="text-foreground font-semibold">Computer Science undergraduate</strong> pursuing a B.E. in Computer Science &amp; Engineering, specializing in <span className="text-primary font-semibold">Artificial Intelligence, Machine Learning, and Full-Stack Development</span>. Experienced in building intelligent, scalable applications using <strong className="text-foreground font-semibold">React, Node.js, Express.js, Python, FastAPI, Flask, MongoDB, and SQL</strong>.
             </p>
             <p className="font-inter text-muted-foreground leading-relaxed text-base mt-4">
-              Like a Blue Lock striker chasing the ultimate goal, I create powerful and scalable digital solutions. 
-              Seeking a <span className="text-primary font-semibold">Full-Stack Developer Internship</span> to apply skills in building, 
-              testing, and optimizing end-to-end web applications.
+              Completed <span className="text-primary font-semibold">three internships</span> across <strong className="text-foreground font-semibold">AI/ML model optimization, enterprise business intelligence, and full-stack web development</strong>, delivering real-world solutions from concept to deployment. Developed projects including a <strong className="text-foreground font-semibold">knowledge distillation platform for edge AI</strong>, <strong className="text-foreground font-semibold">computer vision systems</strong>, and <strong className="text-foreground font-semibold">AI-powered web applications</strong>, with a strong focus on performance, usability, and scalability.
             </p>
 
-            <div className="flex flex-wrap gap-4 mt-6 text-sm font-inter">
+            <div className="flex flex-col gap-2.5 mt-6 text-sm font-inter">
               <span className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="w-4 h-4 text-primary" /> Theni, Tamil Nadu
+                <MapPin className="w-4 h-4 text-primary shrink-0" /> Theni, Tamil Nadu
               </span>
               <span className="flex items-center gap-2 text-muted-foreground">
-                <GraduationCap className="w-4 h-4 text-primary" /> B.E. CSE (2027)
+                <GraduationCap className="w-4 h-4 text-primary shrink-0" /> B.E. Computer Science &amp; Engineering (Expected 2027)
               </span>
               <span className="flex items-center gap-2 text-muted-foreground">
-                <Code2 className="w-4 h-4 text-primary" /> Full-Stack Developer
+                <Code2 className="w-4 h-4 text-primary shrink-0" /> AI &amp; Machine Learning Engineer
               </span>
             </div>
           </motion.div>

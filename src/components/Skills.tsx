@@ -3,27 +3,27 @@ import { motion } from "framer-motion";
 const skillCategories = [
   {
     title: "Languages",
-    skills: ["JavaScript", "Python", "C", "Java"],
+    skills: ["JavaScript", "Python", "Java", "C"],
   },
   {
     title: "Frontend",
-    skills: ["HTML5", "CSS3", "React", "Responsive Design"],
+    skills: ["React", "HTML5", "CSS3", "Responsive Design"],
   },
   {
     title: "Backend",
-    skills: ["Node.js", "Express", "Flask"],
+    skills: ["Node.js", "Express", "Flask", "FastAPI", "REST APIs"],
   },
   {
     title: "Databases",
-    skills: ["MongoDB", "PostgreSQL", "SQLite"],
+    skills: ["MongoDB", "SQLite", "IBM Cognos", "PostgreSQL"],
   },
   {
-    title: "Tools",
-    skills: ["Git", "GitHub", "VS Code", "Postman"],
+    title: "AI / ML",
+    skills: ["NumPy", "Pandas", "Distillation"],
   },
   {
-    title: "Interests",
-    skills: ["RESTful APIs", "ML Models", "Microservices"],
+    title: "Tools & DevOps",
+    skills: ["Git", "GitHub", "VS Code", "Postman", "Docker"],
   },
 ];
 
@@ -39,7 +39,7 @@ const Skills = () => {
           className="text-center mb-16"
         >
           <p className="font-orbitron text-xs tracking-[0.3em] text-primary mb-3">02 // SKILLS</p>
-          <h2 className="font-orbitron text-4xl sm:text-5xl font-bold text-glow">Developer Weapons</h2>
+          <h2 className="font-orbitron text-4xl sm:text-5xl font-bold text-glow">Technical Skills</h2>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
