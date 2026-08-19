@@ -4,7 +4,7 @@ const isGithubActions = process.env.GITHUB_ACTIONS === "true";
 const repo = "my-portfolio";
 
 const nextConfig: NextConfig = {
-  output: "export",
+  output: isGithubActions ? "export" : undefined,
   images: {
     unoptimized: true,
   },
