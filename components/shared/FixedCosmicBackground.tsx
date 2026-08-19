@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface Star {
   x: number;
@@ -49,7 +49,7 @@ const STAR_COLORS = [
 
 export default function FixedCosmicBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [cursorPos, setCursorPos] = useState({ x: -600, y: -600 });
+  const spotlightRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({
     x: -500,
     y: -500,
@@ -71,19 +71,19 @@ export default function FixedCosmicBackground() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // High DPI scaling capped at 2 for performance
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Optimized DPR scaling (capped at 1.5 for buttery 60-120fps)
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     ctx.scale(dpr, dpr);
 
-    // Create multi-layer starfield
-    const starCount = Math.floor(Math.min(width, 1920) * 0.14);
+    // Optimized star count for maximum smoothness
+    const starCount = Math.floor(Math.min(width, 1600) * 0.08);
     const stars: Star[] = [];
     for (let i = 0; i < starCount; i++) {
       const rx = Math.random() * width;
       const ry = Math.random() * height;
-      const z = Math.random() * 1.3 + 0.3; // depth factor
+      const z = Math.random() * 1.2 + 0.3;
       const colorTemplate =
         STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
       stars.push({
@@ -92,18 +92,17 @@ export default function FixedCosmicBackground() {
         originX: rx,
         originY: ry,
         z,
-        size: (Math.random() * 1.7 + 0.5) * z,
-        baseAlpha: Math.random() * 0.6 + 0.35,
-        twinkleSpeed: Math.random() * 0.035 + 0.015,
+        size: (Math.random() * 1.4 + 0.6) * z,
+        baseAlpha: Math.random() * 0.5 + 0.3,
+        twinkleSpeed: Math.random() * 0.025 + 0.01,
         twinklePhase: Math.random() * Math.PI * 2,
         color: colorTemplate,
-        hasSpike: Math.random() < 0.14,
+        hasSpike: Math.random() < 0.1,
       });
     }
 
     const shootingStars: ShootingStar[] = [];
     let lastShootingStarTime = Date.now();
-
     const sparkles: Particle[] = [];
 
     const handleResize = () => {
@@ -115,14 +114,8 @@ export default function FixedCosmicBackground() {
       ctx.scale(dpr, dpr);
 
       stars.forEach((s) => {
-        if (s.x > width) {
-          s.x = Math.random() * width;
-          s.originX = s.x;
-        }
-        if (s.y > height) {
-          s.y = Math.random() * height;
-          s.originY = s.y;
-        }
+        if (s.originX > width) s.originX = Math.random() * width;
+        if (s.originY > height) s.originY = Math.random() * height;
       });
     };
 
@@ -130,28 +123,27 @@ export default function FixedCosmicBackground() {
       mouseRef.current.targetX = e.clientX;
       mouseRef.current.targetY = e.clientY;
       mouseRef.current.isHovering = true;
-      setCursorPos({ x: e.clientX, y: e.clientY });
 
-      // Calculate velocity for responsive light bloom & sparkle particles
+      // Calculate velocity
       const dx = e.clientX - mouseRef.current.lastX;
       const dy = e.clientY - mouseRef.current.lastY;
       mouseRef.current.speed = Math.hypot(dx, dy);
       mouseRef.current.lastX = e.clientX;
       mouseRef.current.lastY = e.clientY;
 
-      // Add gentle stardust particle when moving
-      if (mouseRef.current.speed > 2.5 && sparkles.length < 50) {
+      // Add gentle stardust particle only on noticeable movement
+      if (mouseRef.current.speed > 5 && sparkles.length < 20) {
         sparkles.push({
-          x: e.clientX + (Math.random() - 0.5) * 24,
-          y: e.clientY + (Math.random() - 0.5) * 24,
-          vx: (Math.random() - 0.5) * 1.4,
-          vy: (Math.random() - 0.5) * 1.4 - 0.35,
-          size: Math.random() * 2.2 + 0.6,
-          alpha: 0.85,
-          maxLife: 35 + Math.random() * 20,
+          x: e.clientX + (Math.random() - 0.5) * 16,
+          y: e.clientY + (Math.random() - 0.5) * 16,
+          vx: (Math.random() - 0.5) * 1.0,
+          vy: (Math.random() - 0.5) * 1.0 - 0.2,
+          size: Math.random() * 1.6 + 0.5,
+          alpha: 0.7,
+          maxLife: 24 + Math.random() * 12,
           life: 0,
           color:
-            Math.random() > 0.45
+            Math.random() > 0.5
               ? "rgba(16, 185, 129, "
               : "rgba(212, 175, 55, ",
         });
@@ -162,9 +154,9 @@ export default function FixedCosmicBackground() {
       mouseRef.current.isHovering = false;
     };
 
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerleave", handlePointerLeave);
+    window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("pointerleave", handlePointerLeave, { passive: true });
 
     let isTabActive = true;
     const handleVisibilityChange = () => {
@@ -180,38 +172,44 @@ export default function FixedCosmicBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Smooth mouse lerp for 3D parallax inertia
+      // Smooth mouse lerp
       mouseRef.current.x +=
-        (mouseRef.current.targetX - mouseRef.current.x) * 0.06;
+        (mouseRef.current.targetX - mouseRef.current.x) * 0.08;
       mouseRef.current.y +=
-        (mouseRef.current.targetY - mouseRef.current.y) * 0.06;
+        (mouseRef.current.targetY - mouseRef.current.y) * 0.08;
 
-      const parallaxX = (mouseRef.current.x - width / 2) * 0.04;
-      const parallaxY = (mouseRef.current.y - height / 2) * 0.04;
+      const mouseX = mouseRef.current.x;
+      const mouseY = mouseRef.current.y;
+
+      // Update spotlight position via direct DOM transform (zero React re-renders!)
+      if (spotlightRef.current) {
+        spotlightRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      }
+
+      const parallaxX = (mouseX - width / 2) * 0.025;
+      const parallaxY = (mouseY - height / 2) * 0.025;
 
       const now = Date.now();
 
-      // Spawn shooting star every 3.5 - 7 seconds
-      if (now - lastShootingStarTime > 3500 + Math.random() * 3500) {
+      // Spawn shooting star every 5 - 8 seconds
+      if (now - lastShootingStarTime > 5000 + Math.random() * 3000) {
         lastShootingStarTime = now;
         shootingStars.push({
-          x: Math.random() * width * 0.85 + width * 0.05,
-          y: Math.random() * (height * 0.45),
-          length: Math.random() * 110 + 70,
-          speed: Math.random() * 12 + 14,
-          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.35,
+          x: Math.random() * width * 0.8 + width * 0.1,
+          y: Math.random() * (height * 0.35),
+          length: Math.random() * 80 + 50,
+          speed: Math.random() * 10 + 12,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.25,
           alpha: 1,
           life: 0,
-          maxLife: 42,
+          maxLife: 35,
           color: Math.random() > 0.5 ? "#10B981" : "#D4AF37",
         });
       }
 
-      const mouseX = mouseRef.current.x;
-      const mouseY = mouseRef.current.y;
-      const connectionDistance = 135;
+      const connectionDistance = 110;
 
-      // Render Stars with Magnetic Interaction & 3D Depth
+      // Render Stars (Fast batch drawing with zero shadowBlur)
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i];
         star.twinklePhase += star.twinkleSpeed;
@@ -222,86 +220,67 @@ export default function FixedCosmicBackground() {
         let targetRenderY =
           ((star.originY - parallaxY * star.z) % height + height) % height;
 
-        // Subtle interactive magnetic pull towards mouse cursor
+        // Magnetic attraction near cursor
         if (mouseRef.current.isHovering) {
           const mdx = mouseX - targetRenderX;
           const mdy = mouseY - targetRenderY;
           const distToMouse = Math.hypot(mdx, mdy);
-          if (distToMouse < 180 && distToMouse > 0) {
-            const pullForce = (1 - distToMouse / 180) * 12 * star.z;
+          if (distToMouse < 140 && distToMouse > 0) {
+            const pullForce = (1 - distToMouse / 140) * 8 * star.z;
             targetRenderX += (mdx / distToMouse) * pullForce;
             targetRenderY += (mdy / distToMouse) * pullForce;
           }
         }
 
-        star.x += (targetRenderX - star.x) * 0.1;
-        star.y += (targetRenderY - star.y) * 0.1;
+        star.x += (targetRenderX - star.x) * 0.12;
+        star.y += (targetRenderY - star.y) * 0.12;
 
         const renderedX = star.x;
         const renderedY = star.y;
 
         // Dynamic Twinkle
-        const twinkle = Math.sin(star.twinklePhase) * 0.35 + 0.65;
+        const twinkle = Math.sin(star.twinklePhase) * 0.3 + 0.7;
         let currentAlpha = star.baseAlpha * twinkle;
 
-        // Cursor proximity illumination & constellation line
+        // Cursor proximity constellation line
         const distToMouse = Math.hypot(renderedX - mouseX, renderedY - mouseY);
         if (mouseRef.current.isHovering && distToMouse < connectionDistance) {
           const proximityRatio = 1 - distToMouse / connectionDistance;
-          currentAlpha = Math.min(1, currentAlpha + proximityRatio * 0.7);
+          currentAlpha = Math.min(1, currentAlpha + proximityRatio * 0.5);
 
-          // Draw radiant constellation vector beam to cursor
           ctx.beginPath();
           ctx.moveTo(renderedX, renderedY);
           ctx.lineTo(mouseX, mouseY);
-          ctx.strokeStyle = `rgba(16, 185, 129, ${proximityRatio * 0.3})`;
-          ctx.lineWidth = 0.9;
+          ctx.strokeStyle = `rgba(16, 185, 129, ${proximityRatio * 0.2})`;
+          ctx.lineWidth = 0.7;
           ctx.stroke();
         }
 
-        // Draw connections between neighboring stars
-        for (let j = i + 1; j < stars.length; j++) {
-          const s2 = stars[j];
-          const dist = Math.hypot(renderedX - s2.x, renderedY - s2.y);
+        // Star Outer Soft Halo
+        ctx.beginPath();
+        ctx.arc(renderedX, renderedY, star.size * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `${star.color}${currentAlpha * 0.25})`;
+        ctx.fill();
 
-          if (dist < 90) {
-            const alpha = (1 - dist / 90) * 0.14 * (star.z + s2.z) * 0.5;
-            ctx.beginPath();
-            ctx.moveTo(renderedX, renderedY);
-            ctx.lineTo(s2.x, s2.y);
-            ctx.strokeStyle = `rgba(212, 175, 55, ${alpha})`;
-            ctx.lineWidth = 0.55;
-            ctx.stroke();
-          }
-        }
-
-        // Star Core Glow
+        // Star Core
         ctx.beginPath();
         ctx.arc(renderedX, renderedY, star.size, 0, Math.PI * 2);
         ctx.fillStyle = `${star.color}${currentAlpha})`;
-        ctx.shadowColor = star.color.includes("16, 185, 129")
-          ? "#10B981"
-          : star.color.includes("212, 175, 55")
-          ? "#D4AF37"
-          : "#FFFFFF";
-        ctx.shadowBlur = star.size > 1.2 ? 7 : 2.5;
         ctx.fill();
 
-        // 4-Point Diffraction Spike Flare for prominent stars
-        if (star.hasSpike && currentAlpha > 0.55) {
-          const flareLen = star.size * 4.2 * twinkle;
+        // 4-Point Diffraction Flare for prominent stars
+        if (star.hasSpike && currentAlpha > 0.6) {
+          const flareLen = star.size * 3.5 * twinkle;
           ctx.beginPath();
           ctx.moveTo(renderedX - flareLen, renderedY);
           ctx.lineTo(renderedX + flareLen, renderedY);
           ctx.moveTo(renderedX, renderedY - flareLen);
           ctx.lineTo(renderedX, renderedY + flareLen);
-          ctx.strokeStyle = `${star.color}${currentAlpha * 0.5})`;
-          ctx.lineWidth = 0.65;
+          ctx.strokeStyle = `${star.color}${currentAlpha * 0.4})`;
+          ctx.lineWidth = 0.6;
           ctx.stroke();
         }
       }
-
-      ctx.shadowBlur = 0;
 
       // Update and Draw Shooting Stars
       for (let i = shootingStars.length - 1; i >= 0; i--) {
@@ -312,9 +291,7 @@ export default function FixedCosmicBackground() {
 
         const progress = ss.life / ss.maxLife;
         const currentAlpha =
-          progress < 0.2
-            ? progress / 0.2
-            : 1 - (progress - 0.2) / 0.8;
+          progress < 0.2 ? progress / 0.2 : 1 - (progress - 0.2) / 0.8;
 
         const tailX = ss.x - Math.cos(ss.angle) * ss.length;
         const tailY = ss.y - Math.sin(ss.angle) * ss.length;
@@ -323,14 +300,8 @@ export default function FixedCosmicBackground() {
         grad.addColorStop(
           0,
           ss.color === "#10B981"
-            ? "rgba(16, 185, 129, 0.95)"
-            : "rgba(212, 175, 55, 0.95)"
-        );
-        grad.addColorStop(
-          0.3,
-          ss.color === "#10B981"
-            ? "rgba(16, 185, 129, 0.45)"
-            : "rgba(212, 175, 55, 0.45)"
+            ? `rgba(16, 185, 129, ${currentAlpha * 0.9})`
+            : `rgba(212, 175, 55, ${currentAlpha * 0.9})`
         );
         grad.addColorStop(1, "transparent");
 
@@ -338,14 +309,8 @@ export default function FixedCosmicBackground() {
         ctx.moveTo(ss.x, ss.y);
         ctx.lineTo(tailX, tailY);
         ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.8;
+        ctx.lineWidth = 1.4;
         ctx.stroke();
-
-        // Glowing Star Head
-        ctx.beginPath();
-        ctx.arc(ss.x, ss.y, 1.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
-        ctx.fill();
 
         if (ss.life >= ss.maxLife) {
           shootingStars.splice(i, 1);
@@ -359,10 +324,10 @@ export default function FixedCosmicBackground() {
         p.x += p.vx;
         p.y += p.vy;
         const progress = p.life / p.maxLife;
-        const alpha = (1 - progress) * 0.8;
+        const alpha = (1 - progress) * 0.6;
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * (1 - progress * 0.4), 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * (1 - progress * 0.3), 0, Math.PI * 2);
         ctx.fillStyle = `${p.color}${alpha})`;
         ctx.fill();
 
@@ -386,46 +351,33 @@ export default function FixedCosmicBackground() {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      {/* Dynamic Interactive Dual-Ring Follower Spotlight */}
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden contain-strict">
+      {/* Dynamic GPU-Accelerated Cursor Follower Spotlight */}
       <div
-        className="absolute h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 transition-transform duration-100 ease-out blur-[140px]"
+        ref={spotlightRef}
+        className="absolute -top-[300px] -left-[300px] h-[600px] w-[600px] rounded-full opacity-25 blur-[120px] will-change-transform pointer-events-none"
         style={{
-          left: `${cursorPos.x}px`,
-          top: `${cursorPos.y}px`,
+          transform: "translate3d(-500px, -500px, 0)",
           background:
-            "radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(212, 175, 55, 0.22) 40%, rgba(6, 182, 212, 0.1) 65%, transparent 85%)",
+            "radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(212, 175, 55, 0.18) 45%, transparent 75%)",
         }}
       />
 
-      {/* Floating Ambient Aurora Light Orb 1 - Emerald Pulse */}
-      <div className="animate-pulse-glow absolute -top-40 -left-40 h-[650px] w-[650px] rounded-full bg-emerald/15 blur-[160px]" />
-
-      {/* Floating Ambient Aurora Light Orb 2 - Cyber Gold Pulse */}
+      {/* Floating Ambient Aurora Light Orbs (Optimized GPU layer) */}
+      <div className="animate-pulse-glow absolute -top-32 -left-32 h-[500px] w-[500px] rounded-full bg-emerald/12 blur-[130px] will-change-transform" />
       <div
-        className="animate-pulse-glow absolute top-1/3 -right-40 h-[700px] w-[700px] rounded-full bg-gold/14 blur-[180px]"
+        className="animate-pulse-glow absolute top-1/3 -right-32 h-[550px] w-[550px] rounded-full bg-gold/10 blur-[140px] will-change-transform"
         style={{ animationDelay: "2.5s" }}
       />
-
-      {/* Floating Ambient Aurora Light Orb 3 - Celestial Cyan Glow */}
       <div
-        className="animate-pulse-glow absolute bottom-10 left-1/4 h-[600px] w-[600px] rounded-full bg-cyan/12 blur-[170px]"
+        className="animate-pulse-glow absolute bottom-10 left-1/4 h-[450px] w-[450px] rounded-full bg-cyan/10 blur-[130px] will-change-transform"
         style={{ animationDelay: "4.5s" }}
       />
 
-      {/* Full-Page Interactive Fixed Starfield Canvas */}
+      {/* Full-Page Fixed Starfield Canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 h-full w-full pointer-events-none"
-      />
-
-      {/* Cosmic Stardust Vignette */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(5, 13, 8, 0.65) 100%)",
-        }}
+        className="absolute inset-0 h-full w-full pointer-events-none will-change-transform"
       />
     </div>
   );

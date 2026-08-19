@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useRef, useState, MouseEvent } from "react";
-import { motion } from "framer-motion";
+import React, { useRef, MouseEvent } from "react";
 
 interface LightSpotlightCardProps {
   children: React.ReactNode;
@@ -19,10 +18,7 @@ export default function LightSpotlightCard({
   onClick,
 }: LightSpotlightCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -30,68 +26,48 @@ export default function LightSpotlightCard({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setPosition({ x, y });
+    if (glowRef.current) {
+      glowRef.current.style.opacity = "1";
+      glowRef.current.style.background = `radial-gradient(450px circle at ${x}px ${y}px, ${spotlightColor}, transparent 55%)`;
+    }
 
     if (tiltEffect) {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const rX = ((y - centerY) / centerY) * -5;
-      const rY = ((x - centerX) / centerX) * 5;
-      setRotateX(rX);
-      setRotateY(rY);
+      const rX = ((y - centerY) / centerY) * -4;
+      const rY = ((x - centerX) / centerX) * 4;
+      cardRef.current.style.transform = `perspective(800px) rotateX(${rX}deg) rotateY(${rY}deg) translateY(-2px)`;
     }
   };
 
-  const handleMouseEnter = () => {
-    setOpacity(1);
-  };
-
   const handleMouseLeave = () => {
-    setOpacity(0);
-    setRotateX(0);
-    setRotateY(0);
+    if (glowRef.current) {
+      glowRef.current.style.opacity = "0";
+    }
+    if (cardRef.current && tiltEffect) {
+      cardRef.current.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+    }
   };
 
   return (
-    <motion.div
+    <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       style={{
+        transition: "transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease",
         transformStyle: "preserve-3d",
       }}
-      animate={{
-        rotateX,
-        rotateY,
-      }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className={`card relative overflow-hidden transition-all duration-300 ${className}`}
+      className={`card relative overflow-hidden will-change-transform ${className}`}
     >
-      {/* Light Spotlight Background Glow */}
+      {/* High-Performance Direct GPU Spotlight Glow */}
       <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 rounded-[inherit]"
-        style={{
-          opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
-        }}
-      />
-
-      {/* Light Border Glow Beam */}
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 rounded-[inherit]"
-        style={{
-          opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, rgba(212, 175, 55, 0.4), transparent 40%)`,
-          maskImage: "linear-gradient(#black, #black) content-box, linear-gradient(#black, #black)",
-          maskComposite: "exclude",
-          WebkitMaskComposite: "xor",
-          padding: "1px",
-        }}
+        ref={glowRef}
+        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 rounded-[inherit]"
       />
 
       <div className="relative z-10">{children}</div>
-    </motion.div>
+    </div>
   );
 }
