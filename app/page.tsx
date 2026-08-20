@@ -13,11 +13,13 @@ import Certifications from "@/components/certifications/Certifications";
 import Contact from "@/components/contact/Contact";
 import Outro from "@/components/shared/Outro";
 
+import SmoothScrollProvider from "@/components/shared/SmoothScrollProvider";
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <>
+    <SmoothScrollProvider>
       {loading && <Loader onDone={() => setLoading(false)} />}
       {!loading && <HeaderNav />}
       <FixedCosmicBackground />
@@ -31,6 +33,6 @@ export default function Home() {
         <Contact />
         <Outro />
       </main>
-    </>
+    </SmoothScrollProvider>
   );
 }

@@ -68,34 +68,50 @@ function NeuralGlobe() {
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    // Smooth mouse lerp
-    mouse.current.x += (mouse.current.targetX - mouse.current.x) * 0.06;
-    mouse.current.y += (mouse.current.targetY - mouse.current.y) * 0.06;
+    // Framerate-independent ultra smooth dampening (60fps/120fps/144fps consistent)
+    mouse.current.x = THREE.MathUtils.damp(mouse.current.x, mouse.current.targetX, 3.5, delta);
+    mouse.current.y = THREE.MathUtils.damp(mouse.current.y, mouse.current.targetY, 3.5, delta);
 
     autoRotation.current += delta * 0.12;
-    groupRef.current.rotation.y = autoRotation.current + mouse.current.x * 0.4;
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(
+    groupRef.current.rotation.y = THREE.MathUtils.damp(
+      groupRef.current.rotation.y,
+      autoRotation.current + mouse.current.x * 0.45,
+      4,
+      delta
+    );
+    groupRef.current.rotation.x = THREE.MathUtils.damp(
       groupRef.current.rotation.x,
-      -mouse.current.y * 0.3,
-      0.05
+      -mouse.current.y * 0.35,
+      3.5,
+      delta
     );
 
     if (coreRef.current) {
-      coreRef.current.rotation.y -= delta * 0.2;
-      coreRef.current.rotation.z += delta * 0.1;
+      coreRef.current.rotation.y -= delta * 0.18;
+      coreRef.current.rotation.z += delta * 0.09;
     }
 
     if (ring1Ref.current) {
-      ring1Ref.current.rotation.z += delta * 0.25;
+      ring1Ref.current.rotation.z += delta * 0.22;
     }
 
     if (ring2Ref.current) {
-      ring2Ref.current.rotation.z -= delta * 0.2;
+      ring2Ref.current.rotation.z -= delta * 0.18;
     }
 
     if (pointLightRef.current) {
-      pointLightRef.current.position.x = mouse.current.x * 3.5;
-      pointLightRef.current.position.y = mouse.current.y * 3.5;
+      pointLightRef.current.position.x = THREE.MathUtils.damp(
+        pointLightRef.current.position.x,
+        mouse.current.x * 3.5,
+        4,
+        delta
+      );
+      pointLightRef.current.position.y = THREE.MathUtils.damp(
+        pointLightRef.current.position.y,
+        mouse.current.y * 3.5,
+        4,
+        delta
+      );
     }
   });
 
@@ -132,13 +148,19 @@ function NeuralGlobe() {
       {/* Orbital Ring 1 - Emerald */}
       <mesh ref={ring1Ref} rotation={[0.9, 0.4, 0]}>
         <torusGeometry args={[radius * 1.25, 0.012, 8, 64]} />
-        <meshBasicMaterial color="#10B981" transparent opacity={0.4} />
+        <meshBasicMaterial color="#10B981" transparent opacity={0.45} />
       </mesh>
 
       {/* Orbital Ring 2 - Cyber Gold */}
       <mesh ref={ring2Ref} rotation={[-0.7, 0.5, 0.6]}>
         <torusGeometry args={[radius * 1.38, 0.009, 8, 64]} />
-        <meshBasicMaterial color="#D4AF37" transparent opacity={0.35} />
+        <meshBasicMaterial color="#D4AF37" transparent opacity={0.4} />
+      </mesh>
+
+      {/* Orbital Ring 3 - Diamond White Light */}
+      <mesh rotation={[0.3, -0.6, 0.8]}>
+        <torusGeometry args={[radius * 1.15, 0.008, 8, 64]} />
+        <meshBasicMaterial color="#FFFFFF" transparent opacity={0.35} />
       </mesh>
 
       {/* Inner Glowing Wireframe Sphere Core */}
@@ -148,13 +170,14 @@ function NeuralGlobe() {
           color="#10B981"
           wireframe
           transparent
-          opacity={0.1}
+          opacity={0.12}
         />
       </mesh>
 
-      {/* Dynamic Follower Light */}
-      <pointLight ref={pointLightRef} color="#10B981" intensity={3} distance={7} position={[0, 0, 3]} />
-      <pointLight color="#D4AF37" intensity={2} distance={8} position={[2, 2, 2]} />
+      {/* Dynamic Follower Starlight Lights */}
+      <pointLight ref={pointLightRef} color="#FFFFFF" intensity={3.5} distance={8} position={[0, 0, 3]} />
+      <pointLight color="#10B981" intensity={2.5} distance={7} position={[0, 0, 3]} />
+      <pointLight color="#D4AF37" intensity={2.2} distance={8} position={[2, 2, 2]} />
     </group>
   );
 }
